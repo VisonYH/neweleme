@@ -13,23 +13,33 @@
                     <span class="text">{{seller.supports[0].description}}</span>
                 </div>
             </div>
-            <div class="support-count" v-if="seller.supports">
+            <div class="support-count" v-if="seller.supports" @click="showDetail">
                 <span class="count">{{seller.supports.length}}个</span>
                 <i class="icon-keyboard_arrow_right"></i>
             </div>
         </div>
-        <div class="bulletin-wrapper">
+        <div class="bulletin-wrapper" @click="showDetail">
             <span class="bulletin-title"></span><span class="bulletin-text">{{seller.bulletin}}</span>
             <i class="icon-keyboard_arrow_right"></i>
         </div>
         <div class="background">
             <img :src="seller.avatar" alt="" width="100%" height="100%">
         </div>
+        <bac class="detail" v-show="detailShow.show" :seller="seller" :detailshow="detailShow" transition="fade"></bac>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
+import bac from 'components/bulletinandcount/bac.vue';
 export default {
+    data() {
+        return {
+            detailShow: {show: false}
+        };
+    },
+    components: {
+        bac
+    },
     props: {
         seller: {
             type: Object
@@ -37,6 +47,11 @@ export default {
     },
     created() {
         this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
+    },
+    methods: {
+        showDetail() {
+            this.detailShow.show = true;
+        }
     }
 };
 </script>
@@ -47,6 +62,7 @@ export default {
         position relative
         color #ffffff
         background rgba(7,17,27,0.5)
+        overflow hidden
         .content-wrapper
             padding 24px 12px 18px 24px
             font-size 0
@@ -54,6 +70,8 @@ export default {
             .avatar
                 display inline-block
                 vertical-align top
+                width 64px
+                height 64px
                 img 
                     border-radius 2px
             .content
@@ -105,7 +123,8 @@ export default {
                             bg-image('special_1')
                     .text
                         margin-left 4px
-                        font-size 10px
+                        vertical-align top
+                        font-size 12px
                         color rgb(255,255,255)
                         font-weight 200
                         line-height 12px
@@ -114,12 +133,18 @@ export default {
                 right 12px
                 bottom 12px
                 padding 7px 8px
-                font-size 10px
+                font-size 0
                 color rgb(255,255,255)
                 background rgba(0,0,0,0.2)
                 border-radius 16px
-                line-height 12px
-
+                .count
+                    line-height 10px
+                    font-size 10px
+                .icon-keyboard_arrow_right
+                    line-height 12px
+                    font-size 10px
+                    position: relative;
+                    top: 1px;
 
         .bulletin-wrapper
             position relative
@@ -161,6 +186,25 @@ export default {
             height 100%
             z-index -1
             filter blur(10px)
+        .detail
+            position fixed
+            top 0
+            left 0
+            width 100%
+            height 100%           
+            z-index 100           
+            blur 10px
+            overflow auto
+            backdrop-filter 10px
+            transition all 0.5s
+            &.fade-transition
+                opacity 1
+                background-color rgba(7,17,27,0.8)
+            &.fade-enter,&.fade-leave
+                opacity 0
+                background-color rgba(7,17,27,0)
+
+
 
 
 
