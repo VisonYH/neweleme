@@ -9,7 +9,7 @@
                 </div>
                 <div class="description">{{seller.description}}/{{seller.deliveryTime}}钟送达</div>
                 <div v-if="seller.supports" class="support">
-                    <span class="icon" :class="this.classMap[seller.supports[0].type]"></span>
+                    <span class="icon" :class="classMap[seller.supports[0].type]"></span>
                     <span class="text">{{seller.supports[0].description}}</span>
                 </div>
             </div>
