@@ -1,8 +1,7 @@
 <template>
 <div class="app">
     <v-head :seller='seller'></v-head>
-    <tab></tab>
-
+    <tab :seller='seller'></tab>
 </div>
 </template>
 

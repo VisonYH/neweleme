@@ -11,13 +11,17 @@
                 <a v-link="{path:'/seller'}">商家</a>
             </div>
         </div>
-        <router-view></router-view>
+        <router-view :seller='seller'></router-view>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
     export default {
-
+        props: {
+            seller: {
+                type: Object
+            }
+        }
     };
 </script>
 

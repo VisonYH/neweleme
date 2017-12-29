@@ -30,6 +30,9 @@
                                   <span>￥{{food.price}}</span>
                                   <span v-show="food.oldPrice" class="oldPrice">￥{{food.oldPrice}}</span>
                               </div>
+                              <div class="cartcontrol-wrapper">
+                                  <cartcontrol :food="food"></cartcontrol>
+                              </div>
                           </div>
 
                         </li>
@@ -37,21 +40,32 @@
                 </li>
             </ul>
         </div>
+        <shopcart v-ref:shopcart :selectedfoods="selectedFoods" :deliverprice="seller.deliveryPrice" :minprice="seller.minPrice"></shopcart>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
+    import shopcart from 'components/shopcart/shopcart.vue';
     import BScroll from 'better-scroll';
+    import cartcontrol from 'components/cartcontrol/cartcontrol.vue';
     const ERR_OR = 0;
     export default {
         data() {
             return {
-                goods: {},
+                goods: [],
                 scrollY: 0,
                 HeightArray: []
             };
         },
-        props: {},
+        components: {
+            cartcontrol,
+            shopcart
+        },
+        props: {
+            seller: {
+                type: Object
+            }
+        },
         created() {
             this.$http.get('/api/goods').then(response => {
                 response = response.body;
@@ -68,45 +82,67 @@
         methods: {
             _initScroll() {
                 this.menuScroll = new BScroll(this.$els.menuWrapper, {click: true});
-                this.foodsScroll = new BScroll(this.$els.foodsWrapper,{click: true,probeType: 3});
+                this.foodsScroll = new BScroll(this.$els.foodsWrapper, {click: true, probeType: 3});
                 this.foodsScroll.on('scroll', (pos) => {
-                    if(pos.y <= 0) {
+                    if (pos.y <= 0) {
                         this.scrollY = Math.abs(Math.floor(pos.y));
                     }
-                })
+                });
+            },
+            _drop(target) {
+                 // 体验优化,异步执行下落动画
+                this.$nextTick(() => {
+                    this.$refs.shopcart.drop(target);
+                });
             },
             goodsListHeight() {
-                let foodsList = document.getElementsByClassName("foods-list");
+                let foodsList = document.getElementsByClassName('foods-list');
                 let height = 0;
                 this.HeightArray.push(height);
-                for(let i = 0; i < foodsList.length; i++) {
+                for (let i = 0; i < foodsList.length; i++) {
                     height += foodsList[i].clientHeight;
                     this.HeightArray.push(height);
                 }
                 return 0;
             },
             followScroll(index) {
-                let menu = document.getElementsByClassName("menu-item");
+                let menu = document.getElementsByClassName('menu-item');
                 let el = menu[index];
                 this.menuScroll.scrollToElement(el, 300);
             },
-            selectMenu(index,event) {
-                if(!event._constructed) {
+            selectMenu(index, event) {
+                if (!event._constructed) {
                     return;
                 }
-                let el = document.getElementsByClassName("foods-list")[index];
-                this.foodsScroll.scrollToElement(el,300);
+                let el = document.getElementsByClassName('foods-list')[index];
+                this.foodsScroll.scrollToElement(el, 300);
             }
         },
         computed: {
             getCurrentIndex() {
-                for(let i =0; i < this.HeightArray.length; i++) {
-                    if(!this.HeightArray[i + 1] || (this.scrollY >= this.HeightArray[i] && this.scrollY < this.HeightArray[i+1])) {
+                for (let i = 0; i < this.HeightArray.length; i++) {
+                    if (!this.HeightArray[i + 1] || (this.scrollY >= this.HeightArray[i] && this.scrollY < this.HeightArray[i + 1])) {
                         this.followScroll(i);
                         return i;
                     }
                 }
                 return 0;
+            },
+            selectedFoods() {
+                let foods = [];
+                this.goods.forEach((good) => {
+                    good.foods.forEach((food) => {
+                        if (food.count > 0) {
+                            foods.push(food);
+                        }
+                    });
+                });
+                return foods;
+            }
+        },
+        events: {
+            'cart.add'(target) {
+                this._drop(target);
             }
         }
     };
@@ -193,9 +229,11 @@
                     img 
                         width 100%
                 .content
+                    flex 1
                     font-size 10px
                     color rgb(147,153,159)
                     line-height 10px
+                    position relative
                     .name
                         font-size 14px
                         color rgb(7,17,27)
@@ -216,6 +254,16 @@
                             font-size 10px
                             color rgb(147,153,159)
                             text-decoration line-through
+                    .cartcontrol-wrapper
+                        position absolute
+                        right 0
+                        bottom -8px
+    .shopcart
+        position fixed
+        bottom 0
+        left 0
+        height 48px
+        width 100%
 
 
 
