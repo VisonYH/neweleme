@@ -340,7 +340,13 @@ export default {
         left 0
         width 100%
         height 100%
-        background rgba(7,17,27,0.6)
         z-index -20
+        transition all 0.4s linear
+        &.fade-transition
+            opacity 1
+            background rgba(7,17,27,0.6)
+        &.fade-enter,&.fade-leave
+            opacity 0
+            background: rgba(7, 17, 27, 0)
         
 </style>

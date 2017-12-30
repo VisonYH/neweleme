@@ -15,7 +15,7 @@
                 <li v-for="item in goods" class="foods-list" :key="item">
                     <h1 class="title">{{item.name}}</h1>
                     <ul>
-                        <li v-for="food in item.foods" :key="food" class="food-item">
+                        <li v-for="food in item.foods" :key="food" class="food-item" @click="showfood(food)">
                           <div class="icon">
                               <img :src="food.icon" alt="食品图片">
                           </div>
@@ -34,13 +34,13 @@
                                   <cartcontrol :food="food"></cartcontrol>
                               </div>
                           </div>
-
                         </li>
                     </ul>
                 </li>
             </ul>
         </div>
         <shopcart v-ref:shopcart :selectedfoods="selectedFoods" :deliverprice="seller.deliveryPrice" :minprice="seller.minPrice"></shopcart>
+        <food :food="clickedfood" v-show="foodshowflag" class="food"></food>
     </div>
 </template>
 
@@ -48,18 +48,22 @@
     import shopcart from 'components/shopcart/shopcart.vue';
     import BScroll from 'better-scroll';
     import cartcontrol from 'components/cartcontrol/cartcontrol.vue';
+    import food from 'components/food/food.vue';
     const ERR_OR = 0;
     export default {
         data() {
             return {
                 goods: [],
                 scrollY: 0,
-                HeightArray: []
+                HeightArray: [],
+                foodshowflag: false,
+                clickedfood: {}
             };
         },
         components: {
             cartcontrol,
-            shopcart
+            shopcart,
+            food
         },
         props: {
             seller: {
@@ -88,6 +92,10 @@
                         this.scrollY = Math.abs(Math.floor(pos.y));
                     }
                 });
+            },
+            showfood(food) {
+                this.clickedfood = food;
+                this.foodshowflag = true;
             },
             _drop(target) {
                  // 体验优化,异步执行下落动画
@@ -258,12 +266,21 @@
                         position absolute
                         right 0
                         bottom -8px
+                
+                    
     .shopcart
         position fixed
         bottom 0
         left 0
         height 48px
         width 100%
+    .food
+        position fixed
+        top 0
+        left 0
+        bottom 48px
+        width 100%
+        z-index 40
 
 
 
