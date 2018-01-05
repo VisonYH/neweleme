@@ -64,7 +64,7 @@ export default {
             width: 15px;
             height: 15px;
             background-size: 15px 15px;
-            margin-right: 16px;
+            margin-right: 8px;
             &.on 
                 bg-image('star36_on');
             &.off 

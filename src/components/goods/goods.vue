@@ -15,7 +15,7 @@
                 <li v-for="item in goods" class="foods-list" :key="item">
                     <h1 class="title">{{item.name}}</h1>
                     <ul>
-                        <li v-for="food in item.foods" :key="food" class="food-item" @click="showfood(food)">
+                        <li v-for="food in item.foods" :key="food" class="food-item" @click="showfood(food,$event)">
                           <div class="icon">
                               <img :src="food.icon" alt="食品图片">
                           </div>
@@ -40,7 +40,7 @@
             </ul>
         </div>
         <shopcart v-ref:shopcart :selectedfoods="selectedFoods" :deliverprice="seller.deliveryPrice" :minprice="seller.minPrice"></shopcart>
-        <food :food="clickedfood" v-show="foodshowflag" class="food"></food>
+        <food :food="clickedfood" v-show="foodshowflag" class="food" v-ref:food></food>
     </div>
 </template>
 
@@ -93,9 +93,13 @@
                     }
                 });
             },
-            showfood(food) {
+            showfood(food, event) {
+                if (!event._constructed) {
+                    return;
+                }
                 this.clickedfood = food;
                 this.foodshowflag = true;
+                this.$refs.food.show();
             },
             _drop(target) {
                  // 体验优化,异步执行下落动画
@@ -274,13 +278,7 @@
         left 0
         height 48px
         width 100%
-    .food
-        position fixed
-        top 0
-        left 0
-        bottom 48px
-        width 100%
-        z-index 40
+    
 
 
 
