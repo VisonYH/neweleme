@@ -24,7 +24,7 @@
                 <h1 class="title">商品介绍</h1>    
                 <p class="info">{{food.info}}</p>
             </div>
-            <div class="ratings">
+            <div class="food-ratings">
                 <h1 class="title">商品评价</h1>
                 <ratingselect :ratings="food.ratings" v-ref:ratingselect @toggle="toggle" @selecttype="typeSelect"></ratingselect>
                 
@@ -226,7 +226,7 @@ export default {
             font-weight 200
             color rgb(75,85,93)
             line-height 24px
-    .ratings
+    .food-ratings
         margin 16px 0
         padding 18px
         background-color #ffffff
